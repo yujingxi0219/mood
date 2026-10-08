@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的每日小站</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "微软雅黑", sans-serif;
+    background: linear-gradient(135deg, #dbeafe, #fef9c3, #dbeafe, #fef9c3);
+    background-size: 300% 300%;
+    animation: bg 16s ease infinite;
+    color: #334155;
+    padding: 24px 16px 60px;
+  }
+
+  @keyframes bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  h1 {
+    text-align: center;
+    color: #1e40af;
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.9);
+    border-radius: 20px;
+    padding: 20px;
+    max-width: 640px;
+    margin: 0 auto 20px;
+    box-shadow: 0 6px 20px rgba(30,64,175,0.1);
+  }
+
+  .card h2 {
+    margin: 0 0 14px;
+    font-size: 20px;
+    color: #1e40af;
+    border-left: 6px solid #fde047;
+    padding-left: 10px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 10px 18px;
+    margin: 4px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    background: #60a5fa;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  button:hover { transform: translateY(-2px); }
+  button:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+  }
+
+  /* 多巴胺配色心情按钮 */
+  .mood-btn {
+    font-size: 15px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin: 4px;
+  }
+  .mood-btn:hover { transform: translateY(-2px); }
+  .mood-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.12); }
+
+  .mood-btn.m1 { background: #ff6b9d; }
+  .mood-btn.m2 { background: #ffa94d; }
+  .mood-btn.m3 { background: #ffd93d; color: #713f12; }
+  .mood-btn.m4 { background: #6bcb77; }
+  .mood-btn.m5 { background: #4d96ff; }
+  .mood-btn.m6 { background: #b388ff; }
+  .mood-btn.m7 { background: #f87171; }
+  .mood-btn.m8 { background: #f472b6; }
+  .mood-btn.m9 { background: #fb923c; }
+  .mood-btn.m10 { background: #94a3b8; }
+  .mood-btn.m11 { background: #a78bfa; }
+  .mood-btn.m12 { background: #38bdf8; }
+
+  input, select, textarea {
+    font-size: 15px;
+    padding: 8px 12px;
+    border: 2px solid #bfdbfe;
+    border-radius: 12px;
+    margin: 4px 4px 4px 0;
+    outline: none;
+    background: #fff;
+    font-family: inherit;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: #facc15; }
+
+  .box {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+  }
+
+  .mood-box {
+    background: linear-gradient(135deg, #fce7f3, #e0f2fe, #fef9c3);
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    border: 2px dashed #f9a8d4;
+  }
+
+  .task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fefce8;
+    border-radius: 12px;
+    padding: 8px 14px;
+    margin: 6px 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .task-item.done span {
+    text-decoration: line-through;
+    color: #94a3b8;
+  }
+
+  .task-item .task-time {
+    font-size: 13px;
+    color: #1e40af;
+    background: #dbeafe;
+    padding: 2px 10px;
+    border-radius: 999px;
+  }
+
+  .task-item button {
+    background: #f87171;
+    font-size: 13px;
+    padding: 4px 12px;
+    box-shadow: none;
+  }
+
+  .tab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tab-bar button {
+    background: #e0e7ff;
+    color: #1e40af;
+    font-size: 14px;
+    padding: 8px 16px;
+    box-shadow: none;
+  }
+
+  .tab-bar button.active {
+    background: #1e40af;
+    color: #fff;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .highlight {
+    background: #fef9c3;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .warn {
+    background: #fef2f2;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #991b1b;
+  }
+
+  .alarm-active {
+    background: #fef2f2 !important;
+    border: 2px solid #f87171;
+  }
+</style>
+</head>
+<body>
+
+<h1>🌤️ 我的每日小站</h1>
+<p class="subtitle">心情 · 任务 · 记账 · 饮食 · 运动</p>
+
+<div class="tab-bar">
+  <button class="active" onclick="showTab('mood', this)">😊 心情</button>
+  <button onclick="showTab('task', this)">📝 任务</button>
+  <button onclick="showTab('money', this)">💰 记账</button>
+  <button onclick="showTab('food', this)">🍎 热量</button>
+  <button onclick="showTab('meal', this)">🥗 饮食</button>
+  <button onclick="showTab('plan', this)">💪 健身</button>
+</div>
+
+<!-- ===== 心情（多巴胺配色） ===== -->
+<div class="card section active" id="tab-mood">
+  <h2>😊 今日心情</h2>
+
+  <p style="margin:6px 0; color:#16a34a; font-weight:bold;">🌈 积极</p>
+  <button class="mood-btn m1" onclick="pick('🤩 超级开心')">🤩 超级开心</button>
+  <button class="mood-btn m2" onclick="pick('😄 开心')">😄 开心</button>
+  <button class="mood-btn m3" onclick="pick('🙂 平静')">🙂 平静</button>
+  <button class="mood-btn m4" onclick="pick('😌 放松')">😌 放松</button>
+  <button class="mood-btn m5" onclick="pick('🥰 被爱')">🥰 被爱</button>
+  <button class="mood-btn m6" onclick="pick('😎 自信')">😎 自信</button>
+
+  <p style="margin:14px 0 6px; color:#dc2626; font-weight:bold;">🌧️ 消极</p>
+  <button class="mood-btn m7" onclick="pick('😐 无聊')">😐 无聊</button>
+  <button class="mood-btn m8" onclick="pick('😔 低落')">😔 低落</button>
+  <button class="mood-btn m9" onclick="pick('😰 焦虑')">😰 焦虑</button>
+  <button class="mood-btn m10" onclick="pick('😠 生气')">😠 生气</button>
+  <button class="mood-btn m11" onclick="pick('😣 很难受')">😣 很难受</button>
+  <button class="mood-btn m12" onclick="pick('😴 疲惫')">😴 疲惫</button>
+
+  <div class="mood-box" id="show">还没有记录</div>
+  <div class="mood-box" id="stats"></div>
+</div>
+
+<!-- ===== 任务（带提醒） ===== -->
+<div class="card section" id="tab-task">
+  <h2>📝 每日任务</h2>
+  <div class="highlight">给任务设个时间，到点了页面会弹提醒（页面需保持打开）。</div>
+  <input id="taskInput" placeholder="写一个任务，比如：喝水8杯" style="width:200px">
+  <input id="taskTime" type="time" style="width:120px">
+  <button onclick="addTask()">添加</button>
+  <div id="taskList"></div>
+  <button onclick="requestNotify()" style="background:#4d96ff; margin-top:10px;">开启浏览器通知</button>
+</div>
+
+<!-- ===== 记账 ===== -->
+<div class="card section" id="tab-money">
+  <h2>💰 记账</h2>
+  <input id="moneyInput" type="number" placeholder="金额" style="width:110px">
+  <input id="moneyNote" placeholder="花在哪了" style="width:160px">
+  <button onclick="addMoney()">记一笔</button>
+  <div class="box" id="moneyStats">还没有记录</div>
+</div>
+
+<!-- ===== 食物热量（扩充版） ===== -->
+<div class="card section" id="tab-food">
+  <h2>🍎 食物热量查询</h2>
+  <div class="highlight">
+    拍照识别需要付费AI接口，暂时用搜索+克数计算代替。所有数据按每100克标注。
+  </div>
+  <input id="foodSearch" placeholder="搜食物，比如：鸡胸肉" oninput="searchFood()">
+  <select id="foodSelect" style="max-width:300px;"></select>
+  <input id="foodWeight" type="number" placeholder="克数" style="width:100px">
+  <button onclick="checkFood()">查热量</button>
+  <div class="box" id="foodResult">先搜一个食物，再输入克数</div>
+</div>
+
+<!-- ===== 饮食（克数详细版） ===== -->
+<div class="card section" id="tab-meal">
+  <h2>🥗 饮食推荐</h2>
+  <div class="highlight">
+    <b>增肌餐</b>：高蛋白+缓释碳水+健康脂肪。<br>
+    <b>减脂餐</b>：热量缺口+高蛋白+高纤维，主食换粗粮。<br>
+    以下食谱均标注具体克数，参考自增肌和减脂饮食指南。
+  </div>
+  <select id="mealType">
+    <option value="增肌">增肌餐</option>
+    <option value="减脂">减脂餐</option>
+  </select>
+  <button onclick="suggestMeal()">给我推荐一餐</button>
+  <button onclick="suggestWeek()">看一周食谱</button>
+  <div class="box" id="mealResult">点一下按钮</div>
+</div>
+
+<!-- ===== 健身（谭成义/赵师方案） ===== -->
+<div class="card section" id="tab-plan">
+  <h2>💪 健身计划</h2>
+
+  <div class="highlight">
+    <b>谭成义三分化</b>：推/拉/蹲三天一循环，自然训练者最优解。核心要点：主项渐进超负荷，复合动作不力竭，总组数控制在18-20组，每4周卸载一周。<br>
+    <b>赵师四分化</b>：单天专注单一肌群，适合新手打基础。前期三个月重点练动作模式和肌肉控制，动作标准比重量重要。<br>
+    <b>龙容城方案</b>：高强度高容量训练，适合有基础的老手。
+  </div>
+
+  <div style="margin:10px 0;">
+    年龄：<input id="userAge" type="number" placeholder="13" style="width:80px">
+    性别：
+    <select id="userGender" style="width:90px">
+      <option value="男">男</option>
+      <option value="女">女</option>
+    </select>
+  </div>
+  <div style="margin:10px 0;">
+    身高(cm)：<input id="userHeight" type="number" placeholder="160" style="width:90px">
+    体重(kg)：<input id="userWeight" type="number" placeholder="50" style="width:90px">
+  </div>
+  <div style="margin:10px 0;">
+    目标：
+    <select id="goalSelect">
+      <option value="减脂">减脂</option>
+      <option value="增肌">增肌</option>
+      <option value="塑形">塑形</option>
+      <option value="保持">保持健康</option>
+    </select>
+    水平：
+    <select id="levelSelect">
+      <option value="新手">新手</option>
+      <option value="有点基础">有点基础</option>
+      <option value="老手">老手</option>
+    </select>
+  </div>
+  <div style="margin:10px 0;">
+    每周能练几天：
+    <select id="daysSelect">
+      <option value="3">3天</option>
+      <option value="4">4天</option>
+      <option value="5">5天</option>
+      <option value="6">6天</option>
+    </select>
+  </div>
+
+  <button onclick="makePlan()">生成我的专属计划</button>
+  <div class="box" id="planResult">填好信息，点生成</div>
+</div>
+
+<script>
+/* ========== 工具函数 ========== */
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function load(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function save(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+/* ========== 标签切换 ========== */
+function showTab(name, btn) {
+  document.querySelectorAll(".section").forEach(function(s) {
+    s.classList.remove("active");
+  });
+  document.getElementById("tab-" + name).classList.add("active");
+  document.querySelectorAll(".tab-bar button").forEach(function(b) {
+    b.classList.remove("active");
+  });
+  btn.classList.add("active");
+}
+
+/* ========== 心情 ========== */
+function pick(mood) {
+  document.getElementById("show").innerText = "你选了：" + mood;
+
+  var records = load("moods", []);
+  records = records.filter(function(r) { return r.date !== today(); });
+  records.push({ date: today(), mood: mood });
+  save("moods", records);
+  showStats();
+}
+
+function showStats() {
+  var records = load("moods", []);
+  var count = {};
+  records.forEach(function(r) {
+    count[r.mood] = (count[r.mood] || 0) + 1;
+  });
+
+  var goodMoods = ["🤩 超级开心", "😄 开心", "🙂 平静", "😌 放松", "🥰 被爱", "😎 自信"];
+  var goodDays = 0, badDays = 0;
+  var detail = "";
+
+  for (var mood in count) {
+    detail += mood + "：" + count[mood] + " 天\n";
+    if (goodMoods.indexOf(mood) >= 0) {
+      goodDays += count[mood];
+    } else {
+      badDays += count[mood];
+    }
+  }
+
+  var text =
+    "共记录 " + records.length + " 天\n" +
+    "🌈 积极 " + goodDays + " 天 ｜ 🌧️ 消极 " + badDays + " 天\n\n" +
+    detail;
+
+  document.getElementById("stats").innerText = text || "还没有记录";
+}
+
+/* ========== 任务（带提醒） ========== */
+var alarmTimers = {};
+
+function requestNotify() {
+  if ("Notification" in window) {
+    Notification.requestPermission().then(function(perm) {
+      if (perm === "granted") {
+        alert("通知已开启！");
+      } else {
+        alert("浏览器通知未开启，但仍会用页面弹窗提醒。");
+      }
+    });
+  } else {
+    alert("你的浏览器不支持通知，但仍会用页面弹窗提醒。");
+  }
+}
+
+function addTask() {
+  var input = document.getElementById("taskInput");
+  var timeInput = document.getElementById("taskTime");
+  var text = input.value.trim();
+  var time = timeInput.value;
+
+  if (!text) return;
+
+  var tasks = load("tasks", []);
+  tasks.push({ text: text, done: false, date: today(), time: time || "" });
+  save("tasks", tasks);
+  input.value = "";
+  timeInput.value = "";
+  renderTasks();
+}
+
+function toggleTask(index) {
+  var tasks = load("tasks", []);
+  tasks[index].done = !tasks[index].done;
+  save("tasks", tasks);
+  renderTasks();
+}
+
+function deleteTask(index) {
+  var tasks = load("tasks", []);
+  if (alarmTimers[tasks[index].text + tasks[index].time]) {
+    clearTimeout(alarmTimers[tasks[index].text + tasks[index].time]);
+  }
+  tasks.splice(index, 1);
+  save("tasks", tasks);
+  renderTasks();
+}
+
+function renderTasks() {
+  var tasks = load("tasks", []);
+  var box = document.getElementById("taskList");
+  box.innerHTML = "";
+
+  if (tasks.length === 0) {
+    box.innerHTML = "<div class='box'>今天还没有任务</div>";
+    return;
+  }
+
+  tasks.forEach(function(t, i) {
+    var div = document.createElement("div");
+    div.className = "task-item" + (t.done ? " done" : "");
+
+    var left = document.createElement("div");
+    left.style.display = "flex";
+    left.style.alignItems = "center";
+    left.style.gap = "8px";
+    left.style.flexWrap = "wrap";
+
+    var span = document.createElement("span");
+    span.innerText = (t.done ? "✅ " : "⬜ ") + t.text;
+    span.style.cursor = "pointer";
+    span.onclick = function() { toggleTask(i); };
+    left.appendChild(span);
+
+    if (t.time) {
+      var timeSpan = document.createElement("span");
+      timeSpan.className = "task-time";
+      timeSpan.innerText = "⏰ " + t.time;
+      left.appendChild(timeSpan);
+    }
+
+    var btn = document.createElement("button");
+    btn.innerText = "删除";
+    btn.onclick = function() { deleteTask(i); };
+
+    div.appendChild(left);
+    div.appendChild(btn);
+    box.appendChild(div);
+  });
+
+  startAlarms();
+}
+
+function startAlarms() {
+  var tasks = load("tasks", []);
+  var now = new Date();
+  var nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  tasks.forEach(function(t) {
+    if (!t.time || t.done) return;
+
+    var parts = t.time.split(":");
+    var taskMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    var diff = taskMinutes - nowMinutes;
+
+    var key = t.text + t.time;
+    if (diff > 0 && diff <= 120 && !alarmTimers[key]) {
+      alarmTimers[key] = setTimeout(function() {
+        fireAlarm(t.text);
+      }, diff * 60 * 1000);
+    }
+  });
+
+  setTimeout(startAlarms, 60000);
+}
+
+function fireAlarm(text) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("⏰ 任务提醒", { body: text });
+  } else {
+    alert("⏰ 任务提醒：" + text);
+  }
+}
+
+/* ========== 记账 ========== */
+function addMoney() {
+  var amount = parseFloat(document.getElementById("moneyInput").value);
+  var note = document.getElementById("moneyNote").value.trim();
+  if (!amount || amount <= 0) return;
+
+  var list = load("money", []);
+  list.push({ amount: amount, note: note || "未备注", date: today() });
+  save("money", list);
+
+  document.getElementById("moneyInput").value = "";
+  document.getElementById("moneyNote").value = "";
+  showMoney();
+}
+
+function showMoney() {
+  var list = load("money", []);
+  var t = today();
+  var month = t.slice(0, 7);
+  var year = t.slice(0, 4);
+
+  var daySum = 0, monthSum = 0, yearSum = 0;
+  list.forEach(function(r) {
+    if (r.date === t) daySum += r.amount;
+    if (r.date.slice(0, 7) === month) monthSum += r.amount;
+    if (r.date.slice(0, 4) === year) yearSum += r.amount;
+  });
+
+  document.getElementById("moneyStats").innerText =
+    "今日支出：" + daySum.toFixed(2) + " 元\n" +
+    "本月支出：" + monthSum.toFixed(2) + " 元\n" +
+    "今年支出：" + yearSum.toFixed(2) + " 元\n" +
+    "（共 " + list.length + " 笔记录）";
+}
+
+/* ========== 食物热量（扩充版） ========== */
+var foods = {
+  // 主食类（每100克）
+  "米饭（熟，100g）": 116, "面条（熟，100g）": 110, "馒头（100g）": 223,
+  "全麦面包（100g）": 246, "燕麦（干，100g）": 389, "糙米（熟，100g）": 112,
+  "红薯（100g）": 86, "玉米（100g）": 106, "土豆（100g）": 77,
+  "山药（100g）": 57, "紫薯（100g）": 82, "藜麦（熟，100g）": 120,
+
+  // 蛋白质类（每100克）
+  "鸡蛋（100g）": 144, "鸡胸肉（100g）": 133, "鸡腿（去皮，100g）": 181,
+  "牛肉（瘦，100g）": 250, "猪里脊（100g）": 155, "猪五花（100g）": 395,
+  "鱼（100g）": 110, "三文鱼（100g）": 208, "虾仁（100g）": 93,
+  "豆腐（100g）": 82, "豆浆（100ml）": 31, "牛奶（100ml）": 54,
+  "酸奶（100g）": 72, "希腊酸奶（100g）": 97, "乳清蛋白粉（100g）": 400,
+
+  // 蔬菜类（每100克）
+  "西兰花（100g）": 34, "菠菜（100g）": 24, "黄瓜（100g）": 15,
+  "番茄（100g）": 18, "生菜（100g）": 15, "娃娃菜（100g）": 13,
+  "冬瓜（100g）": 12, "南瓜（100g）": 26, "胡萝卜（100g）": 41,
+  "青椒（100g）": 20, "蘑菇（100g）": 22, "木耳（干，100g）": 265,
+
+  // 水果类（每100克）
+  "苹果（100g）": 53, "香蕉（100g）": 93, "橙子（100g）": 48,
+  "西瓜（100g）": 30, "蓝莓（100g）": 57, "草莓（100g）": 32,
+  "圣女果（100g）": 22, "牛油果（100g）": 160, "葡萄（100g）": 69,
+
+  // 零食饮料类（每100克）
+  "可乐（100ml）": 43, "奶茶（100ml）": 80, "薯片（100g）": 548,
+  "巧克力（100g）": 546, "炸鸡（100g）": 279, "蛋糕（100g）": 350,
+  "巴旦木（100g）": 579, "核桃（100g）": 654, "花生酱（100g）": 588
+};
+
+function initFoods() {
+  var sel = document.getElementById("foodSelect");
+  sel.innerHTML = "";
+  for (var name in foods) {
+    var opt = document.createElement("option");
+    opt.value = name;
+    opt.innerText = name;
+    sel.appendChild(opt);
+  }
+}
+
+function searchFood() {
+  var keyword = document.getElementById("foodSearch").value.trim();
+  var sel = document.getElementById("foodSelect");
+  sel.innerHTML = "";
+
+  for (var name in foods) {
+    if (!keyword || name.indexOf(keyword) >= 0) {
+      var opt = document.createElement("option");
+      opt.value = name;
+      opt.innerText = name;
+      sel.appendChild(opt);
+    }
+  }
+}
+
+function checkFood() {
+  var name = document.getElementById("foodSelect").value;
+  var weight = parseFloat(document.getElementById("foodWeight").value);
+
+  if (!name) {
+    document.getElementById("foodResult").innerText = "先搜一个食物";
+    return;
+  }
+
+  var kcalPer100 = foods[name];
+  var text = name + " ≈ " + kcalPer100 + " 千卡/100g";
+
+  if (weight && weight > 0) {
+    var total = (kcalPer100 * weight / 100).toFixed(0);
+    text += "\n" + weight + "g ≈ " + total + " 千卡";
+  }
+
+  text += "\n\n小提示：成年人每天约1800~2200千卡，减脂期可控制在1500左右，增肌期可提高到2500~3000。";
+  document.getElementById("foodResult").innerText = text;
+}
+
+/* ========== 饮食推荐（克数详细版） ========== */
+var gainMeals = [
+  "【增肌餐·高蛋白高碳水】\n早餐：燕麦80g + 全脂牛奶250ml + 水煮蛋2个 + 香蕉1根\n加餐：希腊酸奶150g + 蓝莓50g\n午餐：鸡胸肉200g + 糙米饭200g + 西兰花150g\n加餐：乳清蛋白粉30g + 燕麦50g\n晚餐：三文鱼180g + 红薯200g + 菠菜150g\n睡前：低脂牛奶250ml",
+  "【增肌餐·经济实惠】\n早餐：全麦面包100g + 煎蛋3个 + 牛油果半个\n加餐：牛奶250ml + 巴旦木20g\n午餐：瘦牛肉150g + 杂粮饭200g + 清炒青菜150g\n加餐：香蕉1根 + 蛋白粉30g\n晚餐：鸡腿肉200g + 藜麦150g + 烤蔬菜200g\n睡前：希腊酸奶150g",
+  "【增肌餐·中式风味】\n早餐：红薯200g + 水煮蛋2个 + 豆浆300ml\n加餐：酸奶150g + 核桃20g\n午餐：红烧鸡腿200g + 糙米饭200g + 炒油菜150g\n加餐：牛奶250ml + 香蕉1根\n晚餐：清蒸鱼200g + 玉米1根 + 西兰花150g\n睡前：牛奶250ml",
+  "【增肌餐·快手版】\n早餐：燕麦100g + 蛋白粉30g + 牛奶250ml\n加餐：全麦面包80g + 花生酱15g\n午餐：鸡胸肉200g + 红薯200g + 生菜150g\n加餐：希腊酸奶150g + 草莓100g\n晚餐：牛肉150g + 糙米180g + 芦笋150g\n睡前：低脂牛奶250ml"
+];
+
+var cutMeals = [
+  "【减脂餐·约1250千卡】\n早餐：水煮蛋2个 + 圣女果100g + 无糖豆浆300ml\n午餐：鸡胸肉120g + 西兰花150g + 糙米饭80g\n晚餐：冬瓜虾仁汤（冬瓜150g+虾仁80g）+ 凉拌黄瓜100g + 蒸红薯100g",
+  "【减脂餐·约1300千卡】\n早餐：燕麦40g + 水煮蛋1个 + 黄瓜100g\n午餐：瘦牛肉100g + 生菜150g + 玉米半根\n晚餐：番茄金针菇汤（番茄150g+金针菇100g）+ 清炒油麦菜150g + 蒸山药80g",
+  "【减脂餐·约1260千卡】\n早餐：紫薯120g + 水煮蛋1个 + 牛奶250ml\n午餐：巴沙鱼150g + 娃娃菜150g + 糙米饭80g\n晚餐：紫菜蛋花汤 + 凉拌木耳100g + 清炒豆芽150g",
+  "【减脂餐·约1280千卡】\n早餐：全麦吐司50g + 水煮蛋1个 + 无糖酸奶150g\n午餐：鸡腿肉120g + 青椒胡萝卜杂炒200g + 菠菜150g\n晚餐：丝瓜瘦肉汤（丝瓜150g+瘦肉50g）+ 凉拌海带丝100g + 蒸南瓜100g",
+  "【减脂餐·约1320千卡】\n早餐：玉米1根 + 水煮蛋1个 + 小黄瓜100g\n午餐：虾仁100g + 炒蛋1个 + 空心菜150g + 杂粮饭80g\n晚餐：白菜豆腐汤（白菜150g+豆腐100g）+ 清炒西葫芦150g"
+];
+
+var weekGain = [
+  "周一：燕麦80g+蛋2个+牛奶250ml / 鸡胸200g+糙米200g+西兰花150g / 蛋白粉30g+香蕉1根 / 三文鱼180g+红薯200g+菠菜150g / 牛奶250ml",
+  "周二：全麦面包100g+蛋3个+牛油果半个 / 牛肉150g+杂粮饭200g+青菜150g / 酸奶150g+蓝莓50g / 鸡腿200g+藜麦150g+蔬菜200g / 牛奶250ml",
+  "周三：红薯200g+蛋2个+豆浆300ml / 鸡腿200g+糙米200g+油菜150g / 香蕉1根+核桃20g / 清蒸鱼200g+玉米1根+西兰花150g / 牛奶250ml",
+  "周四：玉米1根+蛋2个+牛奶250ml / 三文鱼180g+糙米180g+芦笋150g / 蛋白粉30g+香蕉1根 / 鸡胸沙拉200g+红薯200g / 牛奶250ml",
+  "周五：燕麦80g+蛋2个+苹果100g / 瘦牛肉150g+糙米200g+西兰花150g / 希腊酸奶150g+巴旦木20g / 清蒸鱼180g+红薯200g+菠菜150g / 牛奶250ml",
+  "周六：全麦面包100g+煎蛋3个+牛奶250ml / 鸡胸200g+藜麦150g+芦笋150g / 蛋白粉30g+燕麦50g / 虾仁150g+豆腐100g+青菜150g / 牛奶250ml",
+  "周日：自由餐（保证高蛋白+适量碳水，不暴饮暴食）"
+];
+
+var weekCut = [
+  "周一：蛋2个+圣女果100g+豆浆300ml / 鸡胸120g+西兰花150g+糙米80g / 冬瓜虾仁汤+红薯100g",
+  "周二：燕麦40g+蛋1个+黄瓜100g / 牛肉100g+生菜150g+玉米半根 / 番茄金针菇汤+山药80g",
+  "周三：紫薯120g+蛋1个+牛奶250ml / 巴沙鱼150g+娃娃菜150g+糙米80g / 紫菜蛋花汤+木耳100g+豆芽150g",
+  "周四：全麦吐司50g+蛋1个+酸奶150g / 鸡腿120g+青椒胡萝卜200g+菠菜150g / 丝瓜瘦肉汤+南瓜100g",
+  "周五：玉米1根+蛋1个+黄瓜100g / 虾仁100g+炒蛋1个+空心菜150g+杂粮饭80g / 白菜豆腐汤+西葫芦150g",
+  "周六：杂粮粥40g+蛋1个+圣女果100g / 瘦猪肉菌菇150g+芥兰150g+红薯80g / 菌菇青菜汤+藕片100g",
+  "周日：鸡蛋蔬菜饼+小米粥40g / 清炖排骨（去浮油）+菠菜150g+糙米半碗 / 番茄蔬菜汤+西兰花150g"
+];
+
+function suggestMeal() {
+  var type = document.getElementById("mealType").value;
+  if (type === "增肌") {
+    var m = gainMeals[Math.floor(Math.random() * gainMeals.length)];
+    document.getElementById("mealResult").innerText = m;
+  } else {
+    var m = cutMeals[Math.floor(Math.random() * cutMeals.length)];
+    document.getElementById("mealResult").innerText = m;
+  }
+}
+
+function suggestWeek() {
+  var type = document.getElementById("mealType").value;
+  var arr = type === "增肌" ? weekGain : weekCut;
+  var title = type === "增肌" ? "【一周增肌食谱·含克数】" : "【一周减脂食谱·含克数】";
+  document.getElementById("mealResult").innerText = title + "\n\n" + arr.join("\n\n");
+}
+
+/* ========== 健身计划（谭成义/赵师方案） ========== */
+function calcBMR(age, gender, height, weight) {
+  if (gender === "男") {
+    return 10 * weight + 6.25 * height - 5 * age + 5;
+  } else {
+    return 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+}
+
+function calcBMI(height, weight) {
+  var h = height / 100;
+  return weight / (h * h);
+}
+
+function bmiLevel(bmi) {
+  if (bmi < 18.5) return "偏瘦";
+  if (bmi < 24) return "正常";
+  if (bmi < 28) return "偏胖";
+  return "肥胖";
+}
+
+function buildWorkout(bmi, age, goal, level, days) {
+  var isTeen = age < 16;
+  var isHeavy = bmi >= 24;
+  var lines = [];
+
+  // 谭成义三分化 - 推日
+  function tanPush() {
+    if (isTeen) return ["跪姿俯卧撑 12个 × 3组", "哑铃推举（轻）12个 × 3组", "凳上臂屈伸 10个 × 3组"];
+    if (level === "老手") return ["杠铃卧推 5个 × 5组（主项）", "上斜哑铃推举 8~10个 × 4组", "双杠臂屈伸 8个 × 3组", "绳索下压 12个 × 3组"];
+    if (level === "有点基础") return ["哑铃卧推 10个 × 4组（主项）", "哑铃推肩 10个 × 3组", "窄距俯卧撑 10个 × 3组"];
+    return ["跪姿俯卧撑 10个 × 3组", "哑铃推举（轻）10个 × 3组", "墙壁俯卧撑 12个 × 3组"];
+  }
+
+  // 谭成义三分化 - 拉日
+  function tanPull() {
+    if (isTeen) return ["弹力带划船 12个 × 3组", "哑铃划船（轻）10个 × 3组", "反向飞鸟 12个 × 3组"];
+    if (level === "老手") return ["杠铃划船 5个 × 5组（主项）", "引体向上 力竭 × 4组", "面拉 15个 × 3组", "哑铃弯举 10个 × 3组"];
+    if (level === "有点基础") return ["哑铃划船 10个 × 4组（主项）", "弹力带划船 12个 × 3组", "哑铃弯举 10个 × 3组"];
+    return ["弹力带划船 12个 × 3组", "哑铃划船（轻）10个 × 3组", "哑铃弯举 8个 × 3组"];
+  }
+
+  // 谭成义三分化 - 蹲日
+  function tanLegs() {
+    if (isTeen) return ["自重深蹲 15个 × 3组", "箭步蹲 10个/腿 × 3组", "臀桥 15个 × 3组", "提踵 20个 × 3组"];
+    if (level === "老手") return ["杠铃深蹲 5个 × 5组（主项）", "罗马尼亚硬拉 8个 × 3组", "保加利亚分腿蹲 10个/腿 × 3组", "提踵 15个 × 4组"];
+    if (level === "有点基础") return ["高脚杯深蹲 12个 × 4组（主项）", "臀桥 15个 × 3组", "箭步蹲 10个/腿 × 3组"];
+    return ["自重深蹲 12个 × 3组", "臀桥 12个 × 3组", "靠墙静蹲 30秒 × 3组"];
+  }
+
+  function core() {
+    return ["平板支撑 30~45秒 × 3组", "卷腹 15个 × 3组", "俄罗斯转体 20个 × 3组"];
+  }
+
+  function cardioLine() {
+    if (isHeavy) return "快走30分钟（体重偏大，先别跑跳，保护膝盖）";
+    if (isTeen) return "快走/慢跑20分钟，或跳绳8分钟";
+    if (level === "老手") return "慢跑/跳绳30分钟，或HIIT 15分钟";
+    return "慢跑/跳绳20分钟";
+  }
+
+  function dayPlan(name, parts) {
+    var out = name + "\n";
+    parts.forEach(function(p) { out += "· " + p + "\n"; });
+    return out + "· 拉伸5分钟";
+  }
+
+  // 根据天数选择分化方式
+  if (days === 3) {
+    lines.push("【谭成义三分化 · 推/拉/蹲】\n");
+    lines.push(dayPlan("第1天（推日）", tanPush()));
+    lines.push("");
+    lines.push(dayPlan("第2天（拉日）", tanPull()));
+    lines.push("");
+    lines.push(dayPlan("第3天（蹲日）", tanLegs()));
+    lines.push("");
+    lines.push("有氧：" + cardioLine() + "（可选）");
+  } else if (days === 4) {
+    lines.push("【赵师四分化 · 单天专注单一肌群】\n");
+    lines.push(dayPlan("第1天（胸+三头）", tanPush().slice(0,2).concat(core().slice(0,1))));
+    lines.push("");
+    lines.push(dayPlan("第2天（背+二头）", tanPull().slice(0,2).concat(core().slice(1,2))));
+    lines.push("");
+    lines.push(dayPlan("第3天（肩+核心）", ["哑铃推举 10个 × 3组", "侧平举 12个 × 3组", "面拉 15个 × 3组", "平板支撑 45秒 × 3组"]));
+    lines.push("");
+    lines.push(dayPlan("第4天（腿+臀）", tanLegs()));
+  } else if (days === 5) {
+    lines.push("【谭成义三分化 + 上肢补充】\n");
+    lines.push(dayPlan("第1天（推）", tanPush()));
+    lines.push("");
+    lines.push(dayPlan("第2天（拉）", tanPull()));
+    lines.push("");
+    lines.push(dayPlan("第3天（腿）", tanLegs()));
+    lines.push("");
+    lines.push(dayPlan("第4天（上肢）", tanPush().slice(0,1).concat(tanPull().slice(0,1)).concat(core().slice(0,2))));
+    lines.push("");
+    lines.push(dayPlan("第5天（下肢+核心）", tanLegs().slice(0,2).concat(core())));
+  } else {
+    lines.push("【谭成义三分化 × 2 · 推拉蹲推拉蹲】\n");
+    lines.push(dayPlan("第1天（推A）", tanPush()));
+    lines.push("");
+    lines.push(dayPlan("第2天（拉A）", tanPull()));
+    lines.push("");
+    lines.push(dayPlan("第3天（腿A）", tanLegs()));
+    lines.push("");
+    lines.push(dayPlan("第4天（推B）", tanPush().slice(1)));
+    lines.push("");
+    lines.push(dayPlan("第5天（拉B）", tanPull().slice(1)));
+    lines.push("");
+    lines.push(dayPlan("第6天（腿B）", tanLegs().slice(1).concat(core().slice(0,1))));
+  }
+
+  if (goal === "减脂" && days !== 3) {
+    lines.push("");
+    lines.push("有氧：每次力量训练后加 " + cardioLine());
+  }
+
+  if (goal === "增肌") {
+    lines.push("");
+    lines.push("谭成义增肌要点：\n· 复合动作不力竭，单关节动作可以力竭\n· 总组数控制18~20组，组间休息90秒\n· 主项渐进超负荷\n· 每4周做一次卸载周，强度降到50%\n· 每块肌肉48小时恢复，一周练两次效果最好");
+  }
+
+  if (level === "老手" && days >= 5) {
+    lines.push("");
+    lines.push("龙容城方案补充：\n· 高强度高容量训练，适合有训练基础的进阶者\n· 每个肌群每周训练2~3次\n· 注意疲劳管理，保证睡眠和营养");
+  }
+
+  return lines.join("\n");
+}
+
+function makePlan() {
+  var age = parseFloat(document.getElementById("userAge").value);
+  var gender = document.getElementById("userGender").value;
+  var height = parseFloat(document.getElementById("userHeight").value);
+  var weight = parseFloat(document.getElementById("userWeight").value);
+  var goal = document.getElementById("goalSelect").value;
+  var level = document.getElementById("levelSelect").value;
+  var days = parseInt(document.getElementById("daysSelect").value);
+
+  if (!age || !height || !weight) {
+    document.getElementById("planResult").innerText = "请把年龄、身高、体重都填上。";
+    return;
+  }
+  if (age < 10 || age > 80) {
+    document.getElementById("planResult").innerText = "年龄请填10~80之间。";
+    return;
+  }
+  if (height < 100 || height > 220 || weight < 25 || weight > 200) {
+    document.getElementById("planResult").innerText = "身高或体重看起来不太对，检查一下。";
+    return;
+  }
+
+  var bmr = calcBMR(age, gender, height, weight);
+  var bmi = calcBMI(height, weight);
+  var levelText = bmiLevel(bmi);
+
+  var activity = 1.375;
+  if (level === "有点基础") activity = 1.55;
+  if (level === "老手") activity = 1.725;
+  var tdee = bmr * activity;
+
+  var targetCal = tdee;
+  var calTip = "";
+  var isTeen = age < 16;
+
+  if (goal === "减脂") {
+    if (isTeen) {
+      targetCal = tdee - 200;
+      calTip = "每日建议摄入约 " + Math.round(targetCal) + " 千卡（发育期只做小幅缺口，绝对不要节食）";
+    } else {
+      targetCal = tdee - 400;
+      calTip = "每日建议摄入约 " + Math.round(targetCal) + " 千卡（比消耗少约400千卡）";
+    }
+  } else if (goal === "增肌") {
+    targetCal = tdee + 300;
+    calTip = "每日建议摄入约 " + Math.round(targetCal) + " 千卡（比消耗多约300千卡）";
+  } else {
+    calTip = "每日建议摄入约 " + Math.round(targetCal) + " 千卡（维持）";
+  }
+
+  var protein = Math.round(weight * (goal === "增肌" ? 1.8 : 1.5));
+  calTip += "\n蛋白质每天约 " + protein + " 克";
+
+  var teenWarn = "";
+  if (isTeen) {
+    teenWarn = "\n\n⚠️ 你还在发育期，记住三件事：\n" +
+      "· 减脂不要低于 " + Math.round(bmr) + " 千卡（你的基础代谢）\n" +
+      "· 优先练动作标准，别急着上大重量\n" +
+      "· 睡眠比训练重要，每天睡够8~9小时";
+  }
+
+  var plan = buildWorkout(bmi, age, goal, level, days);
+
+  var text =
+    "【你的数据】\n" +
+    "年龄 " + age + " 岁 ｜ " + gender + " ｜ 身高 " + height + "cm ｜ 体重 " + weight + "kg\n" +
+    "BMI " + bmi.toFixed(1) + "（" + levelText + "）\n" +
+    "基础代谢约 " + Math.round(bmr) + " 千卡/天\n" +
+    "日常消耗约 " + Math.round(tdee) + " 千卡/天\n\n" +
+    "【热量建议】\n" + calTip + "\n\n" +
+    "【每周训练 " + days + " 天】\n" + plan +
+    teenWarn;
+
+  document.getElementById("planResult").innerText = text;
+}
+
+/* ========== 启动 ========== */
+window.onload = function() {
+  var records = load("moods", []);
+  if (records.length > 0) {
+    var last = records[records.length - 1];
+    document.getElementById("show").innerText =
+      "上次（" + last.date + "）你选了：" + last.mood;
+  }
+  showStats();
+  renderTasks();
+  showMoney();
+  initFoods();
+};
+</script>
+
+</body>
+</html>
